@@ -4,7 +4,7 @@ USE Fanfiction_App;
 
 CREATE TABLE users (
 	user_id INT AUTO_INCREMENT,
-    email VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
     hashed_password VARCHAR(100),
     PRIMARY KEY (user_id)
 );
@@ -15,6 +15,41 @@ CREATE TABLE fanfic_objective (
     fandom VARCHAR(50),
     title VARCHAR(100),
     author VARCHAR(100),
-    PRIMARY KEY (fanfic_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    summary VARCHAR(1000),
+    PRIMARY KEY (fanfic_id)
+);
+
+CREATE TABLE tags (
+	tag_id INT AUTO_INCREMENT,
+    tag_name VARCHAR(100),
+    PRIMARY KEY (tag_id)
+);
+
+CREATE TABLE fanfic_tags (
+	fanfic_id INT,
+    tag_id INT,
+    PRIMARY KEY (fanfic_id, tag_id),
+    FOREIGN KEY (fanfic_id) REFERENCES fanfic_objective(fanfic_id),
+    FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
+);
+
+CREATE TABLE fanfic_subjective (
+	user_id INT,
+    fanfic_id INT,
+    rating INT CHECK (rating >= 1 AND rating <= 5),
+    review VARCHAR(1000),
+    favorite_moments VARCHAR(1000),
+    PRIMARY KEY (user_id, fanfic_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (fanfic_id) REFERENCES fanfic_objective(fanfic_id)
+);
+
+CREATE TABLE user_favorite_tags (
+	user_id INT,
+    fanfic_id INT,
+    tag_id INT,
+    PRIMARY KEY (user_id, fanfic_id, tag_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (fanfic_id) REFERENCES fanfic_objective(fanfic_id),
+    FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
 );
