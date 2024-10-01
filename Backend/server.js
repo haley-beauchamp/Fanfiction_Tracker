@@ -1,36 +1,20 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const mysql = require('mysql2');
-require('dotenv').config();
-
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
-// Middleware
-app.use(bodyParser.json());
-
-// MySQL connection
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: 'Fanfiction_App'
-});
-
-db.connect((err) => {
-  if (err) {
-    console.error('Database connection failed:', err);
-    return;
-  }
-  console.log('Connected to the database!');
-});
-
-// Sample route
 app.get('/', (req, res) => {
-  res.send('Hello, World!');
-});
-
-// Start the server
+  res.send('Hello World!')
+})
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+  console.log(`Server running at http://localhost:${port}`)
+})
+
+const books = [
+  {id: 1, title: 'Alice in Wonderland', author: 'Lewis Carrol'},
+  {id: 2, title: 'Around the World in eighty days', author: 'Jules Verne'},
+  {id: 3, title: 'Utopia', author: 'Sir Thomas Moor'},
+ ]
+
+ app.get('/api/books', (req, res) => {
+  res.json(books)
+ })
