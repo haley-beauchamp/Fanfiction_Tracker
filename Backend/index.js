@@ -6,6 +6,7 @@ import authRouter from './routes/auth.js';
 const PORT = 3000;
 const app = express();
 
+app.use(express.json());
 app.use(authRouter);
 
 app.get("/users", async (req, res, next) => {

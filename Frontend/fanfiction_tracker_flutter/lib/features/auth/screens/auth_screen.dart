@@ -1,6 +1,7 @@
 import 'package:fanfiction_tracker_flutter/common/widgets/custom_button.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/custom_textfield.dart';
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
+import 'package:fanfiction_tracker_flutter/features/auth/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 enum Auth {
@@ -20,17 +21,21 @@ class _AuthScreenState extends State<AuthScreen> {
   Auth _auth = Auth.signup;
   final _signUpFormKey = GlobalKey<FormState>();
   final _signInFormKey = GlobalKey<FormState>();
-
+  final AuthService authService = AuthService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
 
   @override
   void dispose() {
-    super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _nameController.dispose();
+    _usernameController.dispose();
+    super.dispose();
+  }
+
+  void signUpUser() {
+    authService.signUpUser(context: context, username: _usernameController.text, email: _emailController.text, password: _passwordController.text);
   }
 
   @override
@@ -80,8 +85,8 @@ class _AuthScreenState extends State<AuthScreen> {
                     child: Column(
                       children: [
                         CustomTextField(
-                          controller: _nameController,
-                          hintText: 'Name',
+                          controller: _usernameController,
+                          hintText: 'Username',
                         ),
                         const SizedBox(height: 10),
                         CustomTextField(
@@ -96,7 +101,11 @@ class _AuthScreenState extends State<AuthScreen> {
                         const SizedBox(height: 10),
                         CustomButton(
                           text: 'Sign Up',
-                          onTap: () {},
+                          onTap: () {
+                            if (_signUpFormKey.currentState!.validate()) {
+                              signUpUser();
+                            }
+                          },
                         )
                       ],
                     ),
