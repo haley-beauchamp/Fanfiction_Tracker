@@ -4,14 +4,15 @@ USE Fanfiction_App;
 
 CREATE TABLE users (
 	user_id INT AUTO_INCREMENT,
-    email VARCHAR(100) UNIQUE,
-    hashed_password VARCHAR(100),
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    hashed_password VARCHAR(100) NOT NULL,
     PRIMARY KEY (user_id)
 );
 
 CREATE TABLE fanfic_objective (
 	fanfic_id INT AUTO_INCREMENT,
-    link VARCHAR(500),
+    link VARCHAR(500) NOT NULL,
     fandom VARCHAR(50),
     title VARCHAR(100),
     author VARCHAR(100),
@@ -21,7 +22,7 @@ CREATE TABLE fanfic_objective (
 
 CREATE TABLE tags (
 	tag_id INT AUTO_INCREMENT,
-    tag_name VARCHAR(100),
+    tag_name VARCHAR(100) NOT NULL,
     PRIMARY KEY (tag_id)
 );
 
@@ -53,3 +54,7 @@ CREATE TABLE user_favorite_tags (
     FOREIGN KEY (fanfic_id) REFERENCES fanfic_objective(fanfic_id),
     FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
 );
+
+INSERT INTO users (username, email, hashed_password) VALUES ('me', 'me@gmail.com', 'mypassword');
+INSERT INTO users (username, email, hashed_password) VALUES ('you', 'you@gmail.com', 'yourpassword');
+SELECT * FROM users;
