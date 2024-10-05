@@ -10,19 +10,19 @@ const pool = createPool({
     database: process.env.MYSQL_DATABASE
 }).promise();
 
-export async function getUsers() {
+export async function getUserByEmail(email) {
     try {
-        const [tuples] = await pool.query("SELECT * FROM users");
-        return tuples;
+        const [tuples] = await pool.query(`SELECT * FROM users WHERE email = ?`, [email]);
+        return tuples[0];
     } catch (err) {
         console.error('Error executing query:', err);
         throw err;
     }
 }
 
-export async function getUser(email) {
+export async function getUserById(id) {
     try {
-        const [tuples] = await pool.query(`SELECT * FROM users WHERE email = ?`, [email]);
+        const [tuples] = await pool.query(`SELECT * FROM users WHERE user_id = ?`, [id]);
         return tuples[0];
     } catch (err) {
         console.error('Error executing query:', err);
@@ -34,21 +34,9 @@ export async function createUser(username, email, hashedPassword) {
     try {
         const [result] = await pool.query(`INSERT INTO users (username, email, hashed_password) VALUES (?,?,?)`, [username, email, hashedPassword]);
         const id = result.id;
-        return(getUser(id));
+        return(getUserById(id));
     } catch (err) {
         console.error('Error executing query:', err);
         throw err;
     }
 }
-
-// getUsers().then((users) => {
-//     console.log(users);
-// });
-
-// getUser(1).then((user) => {
-//     console.log(user);
-// });
-
-// createUser('us', 'us@gmail.com', 'ourpassword').then((user) => {
-//     console.log(user);
-// });
