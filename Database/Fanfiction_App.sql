@@ -55,6 +55,4 @@ CREATE TABLE user_favorite_tags (
     FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
 );
 
-INSERT INTO users (username, email, hashed_password) VALUES ('me', 'me@gmail.com', 'mypassword');
-INSERT INTO users (username, email, hashed_password) VALUES ('you', 'you@gmail.com', 'yourpassword');
 SELECT * FROM users;
