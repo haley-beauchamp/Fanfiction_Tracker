@@ -5,6 +5,7 @@ import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const authRouter = Router();
+const secret = process.env.TOKEN_SECRET;
 
 authRouter.post('/api/signup', async (req, res) => {
     const password_min_length = 6;
@@ -48,7 +49,7 @@ authRouter.post('/api/signin', async (req, res) => {
             return res.status(400).json({ message: 'Invalid Login'});
         }
 
-        const token = jwt.sign({id: existingUser.user_id}, "passwordKey");
+        const token = jwt.sign({id: existingUser.user_id}, secret);
         res.json({token, ...existingUser}); //see about selectively including fields later
     } catch (error) {
         res.status(500).json({error: error.message});
@@ -62,7 +63,7 @@ authRouter.post('/tokenIsValid', async (req, res) => {
             return res.json(false);
         }
 
-        const isVerified = jwt.verify(token, "passwordKey");
+        const isVerified = jwt.verify(token, secret);
         if (!isVerified) {
             return res.json(false);
         }
