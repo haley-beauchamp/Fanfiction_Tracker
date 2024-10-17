@@ -16,10 +16,10 @@ authRouter.post('/api/signup', async (req, res) => {
         }
         const existingUser = await getUserByEmail(email);
         if (existingUser != null) {
-            return res.status(409).json({msg: 'User with same email already exists!'});
+            return res.status(409).json({message: 'User with same email already exists!'});
         }
         if (password.length < password_min_length ) {
-            return res.status(400).json({msg: `Password must be at least ${password_min_length} characters`})
+            return res.status(400).json({message: `Password must be at least ${password_min_length} characters`})
         }
         const hashedPassword = await bcryptjs.hash(password, 10);
         const user = await createUser(username, email, hashedPassword);

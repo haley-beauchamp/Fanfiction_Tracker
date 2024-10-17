@@ -1,12 +1,14 @@
 import express from 'express';
 
 import authRouter from './routes/auth.js';
+import fanficRouter from './routes/fanfic.js';
 
 const PORT = 3000;
 const app = express();
 
 app.use(express.json());
 app.use(authRouter);
+app.use(fanficRouter);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

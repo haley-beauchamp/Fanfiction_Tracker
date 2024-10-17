@@ -56,3 +56,5 @@ CREATE TABLE user_favorite_tags (
 );
 
 SELECT * FROM users;
+INSERT INTO fanfic_objective (link, fandom, title, author, summary) VALUES ('abc', 'abc', 'abc', 'abc','abc');
+SELECT * FROM fanfic_objective;

@@ -40,3 +40,13 @@ export async function createUser(username, email, hashedPassword) {
         throw err;
     }
 }
+
+export async function getFanficByLink(link) {
+    try {
+        const [tuples] = await pool.query(`SELECT * FROM fanfic_objective WHERE link = ?`, [link]);
+        return tuples[0];
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw err;
+    } 
+}

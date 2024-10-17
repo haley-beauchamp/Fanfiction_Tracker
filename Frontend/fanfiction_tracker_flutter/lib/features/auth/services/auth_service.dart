@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:fanfiction_tracker_flutter/common/widgets/bottom_bar.dart';
 import 'package:fanfiction_tracker_flutter/constants/error_handling.dart';
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
 import 'package:fanfiction_tracker_flutter/constants/utils.dart';
 import 'package:fanfiction_tracker_flutter/features/auth/models/user.dart';
-import 'package:fanfiction_tracker_flutter/features/home/screens/home_screen.dart';
 import 'package:fanfiction_tracker_flutter/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -77,7 +77,7 @@ class AuthService {
           await prefs.setString('x-auth-token', json.decode(res.body)['token']);
           Navigator.pushNamedAndRemoveUntil(
             context,
-            HomeScreen.routeName,
+            BottomBar.routeName,
             (route) => false,
           );
         },
