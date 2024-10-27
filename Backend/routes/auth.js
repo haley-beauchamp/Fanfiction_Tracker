@@ -80,8 +80,12 @@ authRouter.post('/tokenIsValid', async (req, res) => {
 });
 
 authRouter.get('/', auth, async (req, res) => {
-    const user = await getUserById(req.user);
-    res.json({...user, token: req.token})
+    try {
+        const user = await getUserById(req.user);
+        res.json({...user, token: req.token});
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
 });
 
 export default authRouter;

@@ -1,6 +1,7 @@
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
 import 'package:fanfiction_tracker_flutter/features/account/screens/account_screen.dart';
-import 'package:fanfiction_tracker_flutter/features/home/screens/home_screen.dart';
+import 'package:fanfiction_tracker_flutter/features/fanfic_related/screens/home_screen.dart';
+import 'package:fanfiction_tracker_flutter/features/fanfic_related/screens/lists_screen.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatefulWidget {
@@ -18,6 +19,7 @@ class _BottomBarState extends State<BottomBar> {
 
   List<Widget> pages = [
     const HomeScreen(),
+    const ListsScreen(),
     const AccountScreen(),
   ];
 
@@ -65,6 +67,25 @@ class _BottomBarState extends State<BottomBar> {
                 border: Border(
                   top: BorderSide(
                     color: _page == 1
+                        ? GlobalVariables.selectedNavBarColor
+                        : GlobalVariables.backgroundColor,
+                    width: bottomNavigationBarBorderWidth,
+                  ),
+                ),
+              ),
+              child: const Icon(
+                Icons.library_books_outlined,
+              ),
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Container(
+              width: bottomNavigationBarWidth,
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: _page == 2
                         ? GlobalVariables.selectedNavBarColor
                         : GlobalVariables.backgroundColor,
                     width: bottomNavigationBarBorderWidth,

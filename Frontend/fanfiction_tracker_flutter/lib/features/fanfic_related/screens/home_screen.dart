@@ -1,10 +1,7 @@
 import 'package:fanfiction_tracker_flutter/common/widgets/custom_button.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/custom_textfield.dart';
-import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
-import 'package:fanfiction_tracker_flutter/features/home/services/fanfic_service.dart';
-import 'package:fanfiction_tracker_flutter/providers/user_provider.dart';
+import 'package:fanfiction_tracker_flutter/features/fanfic_related/services/fanfic_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = '/home';
@@ -34,16 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final user = Provider.of<UserProvider>(context).user;
-
-    // return Scaffold(
-    //   body: Center(
-    //     child: Text(
-    //       user.toJson(),
-    //     ),
-    //   ),
-    // );
-
     return Scaffold(
       body: SafeArea(
         child: Padding(

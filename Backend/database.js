@@ -50,3 +50,24 @@ export async function getFanficByLink(link) {
         throw err;
     } 
 }
+
+export async function addFanfic(userId, fanficId, rating, review, favorite_moments, assigned_list) {
+    try {
+        await pool.query(
+            `INSERT INTO fanfic_subjective (user_id, fanfic_id, rating, review, favorite_moments, assigned_list) values (?,?,?,?,?,?)`, 
+            [userId, fanficId, rating, review, favorite_moments, assigned_list]);
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw err;
+    }
+}
+
+export async function getFanficReviewByIds(userId, fanficId) {
+    try {
+        const [tuples] = await pool.query(`SELECT * FROM fanfic_subjective WHERE user_id = ? AND fanfic_id = ?`, [userId, fanficId]);
+        return tuples[0];
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw err;
+    }
+}
