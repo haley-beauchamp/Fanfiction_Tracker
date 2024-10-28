@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const fanficRouter = Router();
-import { getFanficByLink, addFanfic, getFanficReviewByIds } from '../database.js';
+import { getFanficByLink, addFanfic, getFanficReviewByIds, getFanficsByList } from '../database.js';
 
 fanficRouter.post('/api/findfanfic', async (req, res) => {
     try {
@@ -32,6 +32,17 @@ fanficRouter.post('/api/addfanfic', async (req, res) => {
             return res.status(400).json({ message: 'You already reviewed that one, you goof!'});
         }
         await addFanfic(userId, fanficId, rating, review, favoriteMoments, assignedList);
+    } catch(error) {
+        res.status(500).json({error: error.message});
+    }
+});
+
+fanficRouter.post('/api/fanficsbylist', async (req, res) => {
+    try {
+        const {userId, assignedList} = req.body;
+
+        const fanfics = await getFanficsByList(userId, assignedList);
+        res.json(fanfics);
     } catch(error) {
         res.status(500).json({error: error.message});
     }

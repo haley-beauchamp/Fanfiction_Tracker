@@ -71,3 +71,13 @@ export async function getFanficReviewByIds(userId, fanficId) {
         throw err;
     }
 }
+
+export async function getFanficsByList(userId, assignedList) {
+    try {
+        const [tuples] = await pool.query(`SELECT * FROM fanfic_objective JOIN fanfic_subjective ON fanfic_subjective.fanfic_id = fanfic_objective.fanfic_id WHERE user_id = ? AND assigned_list = ?`, [userId, assignedList]);
+        return tuples;
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw err;
+    }
+}

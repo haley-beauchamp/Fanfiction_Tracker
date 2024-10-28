@@ -59,5 +59,7 @@ CREATE TABLE user_favorite_tags (
 SELECT * FROM users;
 INSERT INTO fanfic_objective (link, fandom, title, author, summary) VALUES ('abc', 'abc', 'abc', 'abc','abc');
 INSERT INTO fanfic_objective (link, fandom, title, author, summary) VALUES ('123', 'abc', 'abc', 'abc','abc');
+INSERT INTO fanfic_objective (link, fandom, title, author, summary) VALUES ('example', 'example', 'example', 'example','example');
+INSERT INTO fanfic_objective (link, fandom, title, author, summary) VALUES ('9', '9', '9', '9','9');
 SELECT * FROM fanfic_objective;
 SELECT * FROM fanfic_subjective;
