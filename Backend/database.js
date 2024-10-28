@@ -81,3 +81,13 @@ export async function getFanficsByList(userId, assignedList) {
         throw err;
     }
 }
+
+export async function addFanficFromScraper(link, fandom, title, author, summary) {
+    try {
+        await pool.query(`INSERT INTO fanfic_objective (link, fandom, title, author, summary) VALUES (?,?,?,?,?)`, [link, fandom, title, author, summary]);
+        return getFanficByLink(link);
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw err;
+    }
+}

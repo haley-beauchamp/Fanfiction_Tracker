@@ -1,6 +1,7 @@
 import { Router } from 'express';
 const fanficRouter = Router();
-import { getFanficByLink, addFanfic, getFanficReviewByIds, getFanficsByList } from '../database.js';
+import { getFanficByLink, addFanfic, getFanficReviewByIds, getFanficsByList, addFanficFromScraper } from '../database.js';
+import { scrapeData } from '../scrapers/scraper.js';
 
 fanficRouter.post('/api/findfanfic', async (req, res) => {
     try {
@@ -12,8 +13,9 @@ fanficRouter.post('/api/findfanfic', async (req, res) => {
 
         const existingFanfic = await getFanficByLink(link);
         if (existingFanfic == null) {
-            //logic to find the fanfic????
-            return res.status(400).json({ message: 'That fanfic is not yet available to add.' });
+            const {fandom, title, author, summary} = await scrapeData(link);
+            const newFanfic = await addFanficFromScraper(link, fandom, title, author, summary);
+            res.json(newFanfic);
         }
 
         res.json(existingFanfic);
