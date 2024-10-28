@@ -3,16 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class StarRating extends StatefulWidget {
-  final ValueChanged<double> onRatingChanged; // Callback for rating changes
+  final ValueChanged<double> onRatingChanged;
+  final bool isEditable;
+  final double initialRating;
 
-  const StarRating({super.key, required this.onRatingChanged});
+  const StarRating({
+    super.key,
+    required this.onRatingChanged,
+    this.isEditable = true,
+    this.initialRating = 0.0,
+  });
 
   @override
   State<StarRating> createState() => _StarRatingState();
 }
 
 class _StarRatingState extends State<StarRating> {
-  double _rating = 0.0;
+  late double _rating;
+
+  @override
+  void initState() {
+    super.initState();
+    _rating = widget.initialRating;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +40,15 @@ class _StarRatingState extends State<StarRating> {
         Icons.star,
         color: GlobalVariables.secondaryColor,
       ),
-      onRatingUpdate: (rating) {
-        setState(() {
-          _rating = rating; // Update the rating if you need to save it
-        });
-        widget.onRatingChanged(rating);
-      },
+      onRatingUpdate: widget.isEditable
+          ? (rating) {
+              setState(() {
+                _rating = rating;
+              });
+              widget.onRatingChanged(rating);
+            }
+          : (rating) {}, 
+      ignoreGestures: !widget.isEditable,
     );
   }
 }

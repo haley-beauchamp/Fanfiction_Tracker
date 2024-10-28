@@ -27,20 +27,24 @@ class FanficService {
         },
       );
 
-      httpErrorHandle(
-        response: res,
-        context: context,
-        onSuccess: () {
-          final fanfic = Fanfic.fromJson(res.body);
-          Navigator.pushNamed(
-            context,
-            AddFanficScreen.routeName,
-            arguments: fanfic,
-          );
-        },
-      );
+      if (context.mounted) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            final fanfic = Fanfic.fromJson(res.body);
+            Navigator.pushNamed(
+              context,
+              AddFanficScreen.routeName,
+              arguments: fanfic,
+            );
+          },
+        );
+      }
     } catch (e) {
-      showSnackBar(context, e.toString());
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 
@@ -68,15 +72,19 @@ class FanficService {
         },
       );
 
-      httpErrorHandle(
-        response: res,
-        context: context,
-        onSuccess: () {
-          showSnackBar(context, 'success');
-        },
-      );
+      if (context.mounted) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            showSnackBar(context, 'success');
+          },
+        );
+      }
     } catch (e) {
-      showSnackBar(context, e.toString());
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 
@@ -97,17 +105,21 @@ class FanficService {
         },
       );
 
-      httpErrorHandle(
-        response: res,
-        context: context,
-        onSuccess: () {
-          fanfics = (jsonDecode(res.body) as List)
-              .map((item) => FanficWithReview.fromMap(item))
-              .toList();
-        },
-      );
+      if (context.mounted) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            fanfics = (jsonDecode(res.body) as List)
+                .map((item) => FanficWithReview.fromMap(item))
+                .toList();
+          },
+        );
+      }
     } catch (e) {
-      showSnackBar(context, e.toString());
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
 
     return fanfics;

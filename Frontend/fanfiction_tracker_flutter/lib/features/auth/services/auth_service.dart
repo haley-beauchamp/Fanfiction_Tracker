@@ -26,7 +26,6 @@ class AuthService {
         password: password,
         token: '',
       );
-      //String uri = dotenv.env['API_URI'] ?? 'http://localhost:3000';
       http.Response res = await http.post(
         Uri.parse('$uri/api/signup'),
         body: user.toJson(),
@@ -35,18 +34,22 @@ class AuthService {
         },
       );
 
-      httpErrorHandle(
-        response: res,
-        context: context,
-        onSuccess: () {
-          showSnackBar(
-            context,
-            'Account created: Login with the same credentials!',
-          );
-        },
-      );
+      if (context.mounted) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            showSnackBar(
+              context,
+              'Account created: Login with the same credentials!',
+            );
+          },
+        );
+      }
     } catch (e) {
-      showSnackBar(context, e.toString());
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 
@@ -56,7 +59,6 @@ class AuthService {
     required String password,
   }) async {
     try {
-      //String uri = dotenv.env['API_URI'] ?? 'http://localhost:3000';
       http.Response res = await http.post(
         Uri.parse('$uri/api/signin'),
         body: jsonEncode({
@@ -68,22 +70,32 @@ class AuthService {
         },
       );
 
-      httpErrorHandle(
-        response: res,
-        context: context,
-        onSuccess: () async {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          Provider.of<UserProvider>(context, listen: false).setUser(res.body);
-          await prefs.setString('x-auth-token', json.decode(res.body)['token']);
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            BottomBar.routeName,
-            (route) => false,
-          );
-        },
-      );
+      if (context.mounted) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            if (context.mounted) {
+              Provider.of<UserProvider>(context, listen: false)
+                  .setUser(res.body);
+            }
+            await prefs.setString(
+                'x-auth-token', json.decode(res.body)['token']);
+            if (context.mounted) {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                BottomBar.routeName,
+                (route) => false,
+              );
+            }
+          },
+        );
+      }
     } catch (e) {
-      showSnackBar(context, e.toString());
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 
@@ -117,11 +129,15 @@ class AuthService {
           },
         );
 
-        var userProvider = Provider.of<UserProvider>(context, listen: false);
-        userProvider.setUser(userRes.body);
+        if (context.mounted) {
+          var userProvider = Provider.of<UserProvider>(context, listen: false);
+          userProvider.setUser(userRes.body);
+        }
       }
     } catch (e) {
-      showSnackBar(context, e.toString());
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic_with_review.dart';
+import 'package:fanfiction_tracker_flutter/features/fanfic_related/screens/fanfic_with_review_display.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/services/fanfic_service.dart';
 import 'package:flutter/material.dart';
 
@@ -12,13 +13,6 @@ class ListsScreen extends StatefulWidget {
 }
 
 class _ListsScreenState extends State<ListsScreen> {
-  // final List<String> fanfics = [
-  //   'Fanfic Title 1',
-  //   'Fanfic Title 2',
-  //   'Fanfic Title 3',
-  //   'Fanfic Title 4',
-  //   'Fanfic Title 5',
-  // ];
   final FanficService fanficService = FanficService();
   List<FanficWithReview> fanfics = [];
 
@@ -29,7 +23,8 @@ class _ListsScreenState extends State<ListsScreen> {
   }
 
   Future<void> getFanfics() async {
-    List<FanficWithReview> fetchedFanfics = await fanficService.findFanficsByList(
+    List<FanficWithReview> fetchedFanfics =
+        await fanficService.findFanficsByList(
       context: context,
       assignedList: 'Read', // Replace with the actual list you want to fetch
     );
@@ -55,8 +50,22 @@ class _ListsScreenState extends State<ListsScreen> {
       body: ListView.builder(
         itemCount: fanfics.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(fanfics[index].title),
+          return InkWell(
+            onTap: () {
+              Navigator.pushNamed(
+              context,
+              FanficWithReviewDisplay.routeName,
+              arguments: fanfics[index],
+          );
+            },
+            child: ListTile(
+              title: Center(
+                child: Text(
+                  fanfics[index].title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
           );
         },
       ),
