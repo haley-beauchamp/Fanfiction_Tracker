@@ -51,11 +51,19 @@ export async function getFanficByLink(link) {
     } 
 }
 
-export async function addFanfic(userId, fanficId, rating, review, favorite_moments, assigned_list) {
+export async function addFanfic(userId, fanficId, rating, review, favoriteMoments, assignedList, fanficTags) {
     try {
         await pool.query(
             `INSERT INTO fanfic_subjective (user_id, fanfic_id, rating, review, favorite_moments, assigned_list) values (?,?,?,?,?,?)`, 
-            [userId, fanficId, rating, review, favorite_moments, assigned_list]);
+            [userId, fanficId, rating, review, favoriteMoments, assignedList]);
+        for (const tag of fanficTags) {
+            const tagId = await getTagId(tag);
+            await pool.query(
+                `INSERT INTO user_favorite_tags (user_id, fanfic_id, tag_id) values (?,?,?)`,
+                [userId, fanficId, tagId]
+            );
+        }
+        return getFanficReviewByIds(userId, fanficId);
     } catch (err) {
         console.error('Error executing query:', err);
         throw err;
@@ -82,10 +90,46 @@ export async function getFanficsByList(userId, assignedList) {
     }
 }
 
-export async function addFanficFromScraper(link, fandom, title, author, summary) {
+export async function addFanficFromScraper(link, fandom, title, author, summary, tags) {
     try {
         await pool.query(`INSERT INTO fanfic_objective (link, fandom, title, author, summary) VALUES (?,?,?,?,?)`, [link, fandom, title, author, summary]);
-        return getFanficByLink(link);
+        const baseFanfic = await getFanficByLink(link);
+        const fanficId = baseFanfic.fanfic_id;
+
+        for (var tagName of tags) {
+            let tagId = await getTagId(tagName);
+            if (tagId == null) {
+                await pool.query(`INSERT INTO tags (tag_name) VALUES (?)`, [tagName]);
+                tagId = await getTagId(tagName);
+            }
+            await pool.query(`INSERT INTO fanfic_tags VALUES (?, ?)`, [fanficId, tagId]);
+        }
+
+        const fanficTags = await getFanficTags(baseFanfic.fanfic_id);
+        baseFanfic.tags = fanficTags;
+        return baseFanfic;
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw err;
+    }
+}
+
+export async function getTagId(tagName) {
+    try {
+        const [result] = await pool.query(`SELECT * FROM tags WHERE tag_name = ?`, [tagName]);
+        //return result[0].tag_id;
+        return result.length > 0 ? result[0].tag_id : null;
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw err;
+    }
+}
+
+export async function getFanficTags(fanficId) {
+    try {
+        const [tags] = await pool.query(`SELECT tag_name FROM fanfic_tags JOIN tags ON fanfic_tags.tag_id = tags.tag_id WHERE fanfic_id = ?`, [fanficId]);
+        const tagNames = tags.map(tag => tag.tag_name);;
+        return tagNames;
     } catch (err) {
         console.error('Error executing query:', err);
         throw err;

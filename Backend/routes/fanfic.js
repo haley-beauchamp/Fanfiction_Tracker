@@ -4,6 +4,7 @@ import { getFanficByLink, addFanfic, getFanficReviewByIds, getFanficsByList, add
 import { scrapeData } from '../scrapers/scraper.js';
 
 fanficRouter.post('/api/findfanfic', async (req, res) => {
+    const baseURL = 'https://archiveofourown.org/works/';
     try {
         const { link } = req.body;
         
@@ -13,8 +14,12 @@ fanficRouter.post('/api/findfanfic', async (req, res) => {
 
         const existingFanfic = await getFanficByLink(link);
         if (existingFanfic == null) {
-            const {fandom, title, author, summary} = await scrapeData(link);
-            const newFanfic = await addFanficFromScraper(link, fandom, title, author, summary);
+            if (!link.startsWith(baseURL)) {
+                return res.status(400).json({ message: 'Invalid Link' });
+            }
+
+            const {fandom, title, author, summary, tags} = await scrapeData(link);
+            const newFanfic = await addFanficFromScraper(link, fandom, title, author, summary, tags);
             res.json(newFanfic);
         }
 
@@ -27,13 +32,14 @@ fanficRouter.post('/api/findfanfic', async (req, res) => {
 
 fanficRouter.post('/api/addfanfic', async (req, res) => {
     try {
-        const {userId, fanficId, rating, review, favoriteMoments, assignedList} = req.body;
+        const {userId, fanficId, rating, review, favoriteMoments, assignedList, fanficTags} = req.body;
 
         const fanficReview = await getFanficReviewByIds(userId, fanficId);
         if (fanficReview != null) {
             return res.status(400).json({ message: 'You already reviewed that one, you goof!'});
         }
-        await addFanfic(userId, fanficId, rating, review, favoriteMoments, assignedList);
+        const fanfic = await addFanfic(userId, fanficId, rating, review, favoriteMoments, assignedList, fanficTags);
+        res.json(fanfic);
     } catch(error) {
         res.status(500).json({error: error.message});
     }

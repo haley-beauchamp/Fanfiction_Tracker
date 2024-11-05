@@ -1,5 +1,6 @@
 import 'package:fanfiction_tracker_flutter/common/widgets/custom_button.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/custom_textfield.dart';
+import 'package:fanfiction_tracker_flutter/common/widgets/multiselect_rectangles.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/star_rating.dart';
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic.dart';
@@ -21,7 +22,8 @@ class _AddFanficScreenState extends State<AddFanficScreen> {
   final TextEditingController _favoriteMomentsController =
       TextEditingController();
 
-  double _rating = 0.0;
+  double fanficRating = 0.0;
+  List<String> selectedFanficTags = [];
 
   @override
   void dispose() {
@@ -35,9 +37,10 @@ class _AddFanficScreenState extends State<AddFanficScreen> {
       context: context,
       fanficId: fanficId,
       review: _reviewController.text,
-      rating: _rating,
+      rating: fanficRating,
       favoriteMoments: _favoriteMomentsController.text,
       assignedList: 'Read', //edit this to let the user pick
+      selectedTags: selectedFanficTags,
     );
   }
 
@@ -94,10 +97,24 @@ class _AddFanficScreenState extends State<AddFanficScreen> {
                         hintText: 'Favorite Moments',
                       ),
                       const SizedBox(height: 10),
+                      const Text(
+                        'Favorite Tags',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      const SizedBox(height: 10),
+                      MultiselectRectangles(
+                        displayList: fanfic.tags,
+                        onSelectionChanged: (selectedTags) {
+                          setState(() {
+                            selectedFanficTags = selectedTags; // Update selected tags
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 10),
                       StarRating(
                         onRatingChanged: (rating) {
                           setState(() {
-                            _rating = rating;
+                            fanficRating = rating;
                           });
                         },
                       ),

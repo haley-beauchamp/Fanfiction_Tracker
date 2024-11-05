@@ -7,6 +7,7 @@ class Fanfic {
   final String title;
   final String author;
   final String summary;
+  final List<String> tags;
 
   Fanfic({
     required this.id,
@@ -15,6 +16,7 @@ class Fanfic {
     required this.title,
     required this.author,
     required this.summary,
+    required this.tags,
   });
 
   Map<String, dynamic> toMap() {
@@ -25,6 +27,7 @@ class Fanfic {
       'title': title,
       'author': author,
       'summary': summary,
+      'tags': tags,
     };
   }
 
@@ -36,6 +39,7 @@ class Fanfic {
       title: map['title'] ?? '',
       author: map['author'] ?? '',
       summary: map['summary'] ?? '',
+      tags: List<String>.from(map['tags'] ?? []), //convert tags into list of Strings
     );
   }
 

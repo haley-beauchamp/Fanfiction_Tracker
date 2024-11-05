@@ -16,7 +16,7 @@ CREATE TABLE fanfic_objective (
     fandom VARCHAR(50),
     title VARCHAR(100),
     author VARCHAR(100),
-    summary VARCHAR(1000),
+    summary VARCHAR(2000),
     PRIMARY KEY (fanfic_id)
 );
 
@@ -57,9 +57,33 @@ CREATE TABLE user_favorite_tags (
 );
 
 SELECT * FROM users;
-INSERT INTO fanfic_objective (link, fandom, title, author, summary) VALUES ('abc', 'abc', 'abc', 'abc','abc');
-INSERT INTO fanfic_objective (link, fandom, title, author, summary) VALUES ('123', 'abc', 'abc', 'abc','abc');
-INSERT INTO fanfic_objective (link, fandom, title, author, summary) VALUES ('example', 'example', 'example', 'example','example');
-INSERT INTO fanfic_objective (link, fandom, title, author, summary) VALUES ('9', '9', '9', '9','9');
 SELECT * FROM fanfic_objective;
 SELECT * FROM fanfic_subjective;
+SELECT * FROM tags;
+SELECT * FROM fanfic_tags;
+
+SELECT  
+	tags.tag_id AS tag_id,
+    tag_name,
+    fanfic_id
+FROM tags JOIN fanfic_tags ON tags.tag_id = fanfic_tags.tag_id
+WHERE fanfic_id = 22;
+
+SELECT *
+FROM user_favorite_tags JOIN tags ON user_favorite_tags.tag_id = tags.tag_id
+WHERE user_favorite_tags.fanfic_id = 22;
+
+SELECT * FROM user_favorite_tags;
+
+CREATE VIEW fanfic_review_statistics AS
+SELECT
+	fo.fanfic_id,
+	title,
+	COUNT(fs.fanfic_id) AS times_reviewed
+FROM
+	fanfic_objective AS fo
+    LEFT JOIN 
+    fanfic_subjective AS fs
+    ON fo.fanfic_id = fs.fanfic_id
+GROUP BY
+	fo.fanfic_id;

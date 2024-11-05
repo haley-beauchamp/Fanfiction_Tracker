@@ -6,6 +6,7 @@ import 'package:fanfiction_tracker_flutter/constants/utils.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic_with_review.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/screens/add_fanfic_screen.dart';
+import 'package:fanfiction_tracker_flutter/features/fanfic_related/screens/fanfic_with_review_display.dart';
 import 'package:fanfiction_tracker_flutter/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -55,6 +56,7 @@ class FanficService {
     required double rating,
     required String favoriteMoments,
     required String assignedList,
+    required List<String> selectedTags,
   }) async {
     try {
       http.Response res = await http.post(
@@ -66,6 +68,7 @@ class FanficService {
           'review': review,
           'favoriteMoments': favoriteMoments,
           'assignedList': assignedList,
+          'fanficTags': selectedTags,
         }),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -77,7 +80,12 @@ class FanficService {
           response: res,
           context: context,
           onSuccess: () {
-            showSnackBar(context, 'success');
+            final fanfic = FanficWithReview.fromJson(res.body);
+            Navigator.pushNamed(
+              context,
+              FanficWithReviewDisplay.routeName,
+              arguments: fanfic,
+            ); //this works now, but since it pushes it on top of the current page, it goes back to the user submitting their review if they press back
           },
         );
       }
