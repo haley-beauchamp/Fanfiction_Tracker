@@ -21,6 +21,7 @@ class MultiselectRectangles extends StatefulWidget {
 
 class _MultiselectRectanglesState extends State<MultiselectRectangles> {
   final Set<int> _selectedIndices = {};
+  bool _isExpanded = false;
 
   @override
   void initState() {
@@ -37,44 +38,59 @@ class _MultiselectRectanglesState extends State<MultiselectRectangles> {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 8.0,
-      runSpacing: 8.0,
-      children: List.generate(widget.displayList.length, (index) {
-        return GestureDetector(
-          onTap: widget.isEditable ? () {
-            setState(() {
-              if (_selectedIndices.contains(index)) {
-                _selectedIndices.remove(index);
-              } else {
-                _selectedIndices.add(index);
-              }
+    final itemsToDisplay = _isExpanded ? widget.displayList : widget.displayList.take(5).toList();
 
-              List<String> selectedStrings = _selectedIndices
-                  .map((selectedIndex) => widget.displayList[selectedIndex])
-                  .toList();
-
-              widget.onSelectionChanged(selectedStrings);
-            });
-          } : null,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            decoration: BoxDecoration(
-              color: _selectedIndices.contains(index)
-                  ? GlobalVariables.secondaryColor
-                  : GlobalVariables.backgroundColor,
-              border: Border.all(color: Colors.black),
-            ),
-            child: Text(
-              widget.displayList[index],
-              style: TextStyle(
-                color: _selectedIndices.contains(index) ? Colors.white : Colors.black,
-                fontSize: 16,
+    return Column(
+      children: [
+        Wrap(
+          spacing: 8.0,
+          runSpacing: 8.0,
+          children: List.generate(itemsToDisplay.length, (index) {
+            return GestureDetector(
+              onTap: widget.isEditable ? () {
+                setState(() {
+                  if (_selectedIndices.contains(index)) {
+                    _selectedIndices.remove(index);
+                  } else {
+                    _selectedIndices.add(index);
+                  }
+        
+                  List<String> selectedStrings = _selectedIndices
+                      .map((selectedIndex) => widget.displayList[selectedIndex])
+                      .toList();
+        
+                  widget.onSelectionChanged(selectedStrings);
+                });
+              } : null,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                decoration: BoxDecoration(
+                  color: _selectedIndices.contains(index)
+                      ? GlobalVariables.secondaryColor
+                      : GlobalVariables.backgroundColor,
+                  border: Border.all(color: Colors.black),
+                ),
+                child: Text(
+                  itemsToDisplay[index],
+                  style: TextStyle(
+                    color: _selectedIndices.contains(index) ? Colors.white : Colors.black,
+                    fontSize: 16,
+                  ),
+                ),
               ),
-            ),
+            );
+          }),
+        ),
+        if (widget.displayList.length > 5)
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _isExpanded = !_isExpanded;
+              });
+            },
+            child: Text(_isExpanded ? 'Show Less' : 'Show More'),
           ),
-        );
-      }),
+      ],
     );
   }
 }
