@@ -13,6 +13,7 @@ class FanficWithReview {
   final String review;
   final String favoriteMoments;
   final String assignedList;
+  final List<String> favoriteTags;
 
   FanficWithReview({
     required this.fanficId,
@@ -27,6 +28,7 @@ class FanficWithReview {
     required this.review,
     required this.favoriteMoments,
     required this.assignedList,
+    required this.favoriteTags,
   });
 
   Map<String, dynamic> toMap() {
@@ -43,6 +45,7 @@ class FanficWithReview {
       'review': review,
       'favorite_moments': favoriteMoments,
       'assigned_list': assignedList,
+      'favorite_tags': favoriteTags,
     };
   }
 
@@ -60,6 +63,7 @@ class FanficWithReview {
       review: map['review'] ?? '',
       favoriteMoments: map['favorite_moments'] ?? '',
       assignedList: map['assigned_list'] ?? '',
+      favoriteTags: List<String>.from(map['favorite_tags'] ?? []),
     );
   }
 

@@ -71,6 +71,7 @@ class _FanficWithReviewDisplayState extends State<FanficWithReviewDisplay> {
                       setState(() {});
                     },
                     isEditable: false,
+                    favoritesDisplayList: fanfic.favoriteTags,
                   ),
                   const SizedBox(height: 10),
                   StarRating(

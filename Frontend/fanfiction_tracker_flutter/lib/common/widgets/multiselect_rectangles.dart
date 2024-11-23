@@ -5,12 +5,14 @@ class MultiselectRectangles extends StatefulWidget {
   final List<String> displayList;
   final ValueChanged<List<String>> onSelectionChanged;
   final bool isEditable;
+  final List<String>? favoritesDisplayList;
 
   const MultiselectRectangles({
     super.key,
     required this.displayList,
     required this.onSelectionChanged,
     this.isEditable = true,
+    this.favoritesDisplayList,
   });
 
   @override
@@ -19,6 +21,19 @@ class MultiselectRectangles extends StatefulWidget {
 
 class _MultiselectRectanglesState extends State<MultiselectRectangles> {
   final Set<int> _selectedIndices = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.favoritesDisplayList != null) {
+      for (int i = 0; i < widget.displayList.length; i++) {
+        if (widget.favoritesDisplayList!.contains(widget.displayList[i])) {
+          _selectedIndices.add(i);
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

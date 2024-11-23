@@ -58,12 +58,12 @@ export async function getFanficByLink(link) {
     } 
 }
 
-export async function addFanfic(userId, fanficId, rating, review, favoriteMoments, assignedList, fanficTags) {
+export async function addFanfic(userId, fanficId, rating, review, favoriteMoments, assignedList, favoriteFanficTags) {
     try {
         await pool.query(
             `INSERT INTO fanfic_subjective (user_id, fanfic_id, rating, review, favorite_moments, assigned_list) values (?,?,?,?,?,?)`, 
             [userId, fanficId, rating, review, favoriteMoments, assignedList]);
-        for (const tag of fanficTags) {
+        for (const tag of favoriteFanficTags) {
             const tagId = await getTagId(tag);
             await pool.query(
                 `INSERT INTO user_favorite_tags (user_id, fanfic_id, tag_id) values (?,?,?)`,
@@ -94,6 +94,9 @@ export async function getFanficsByList(userId, assignedList) {
         for (var fanfic of fanfics) {
             const fanficTags = await getFanficTags(fanfic.fanfic_id);
             fanfic.tags = fanficTags;
+
+            const favoriteFanficTags = await getFavoriteFanficTags(userId, fanfic.fanfic_id);
+            fanfic.favorite_tags = favoriteFanficTags;
         }
 
         return fanfics;
@@ -141,6 +144,17 @@ export async function getTagId(tagName) {
 export async function getFanficTags(fanficId) {
     try {
         const [tags] = await pool.query(`SELECT tag_name FROM fanfic_tags JOIN tags ON fanfic_tags.tag_id = tags.tag_id WHERE fanfic_id = ?`, [fanficId]);
+        const tagNames = tags.map(tag => tag.tag_name);;
+        return tagNames;
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw err;
+    }
+}
+
+export async function getFavoriteFanficTags(userId, fanficId) {
+    try {
+        const [tags] = await pool.query(`SELECT tag_name FROM fanfic_tags AS ft JOIN tags ON ft.tag_id = tags.tag_id JOIN user_favorite_tags AS ut ON ft.tag_id = ut.tag_id WHERE user_id = ? AND ft.fanfic_id = ?`, [userId, fanficId]);
         const tagNames = tags.map(tag => tag.tag_name);;
         return tagNames;
     } catch (err) {
