@@ -1,3 +1,4 @@
+import 'package:fanfiction_tracker_flutter/common/widgets/multiselect_rectangles.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/star_rating.dart';
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic_with_review.dart';
@@ -62,6 +63,14 @@ class _FanficWithReviewDisplayState extends State<FanficWithReviewDisplay> {
                   Text(
                     'Favorite Moments: ${fanfic.favoriteMoments}',
                     style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 10),
+                  MultiselectRectangles(
+                    displayList: fanfic.tags,
+                    onSelectionChanged: (selectedTags) {
+                      setState(() {});
+                    },
+                    isEditable: false,
                   ),
                   const SizedBox(height: 10),
                   StarRating(

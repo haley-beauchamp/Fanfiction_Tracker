@@ -44,7 +44,14 @@ export async function createUser(username, email, hashedPassword) {
 export async function getFanficByLink(link) {
     try {
         const [tuples] = await pool.query(`SELECT * FROM fanfic_objective WHERE link = ?`, [link]);
-        return tuples[0];
+        const fanfic = tuples[0];
+
+        if (fanfic != null) {
+            const fanficTags = await getFanficTags(fanfic.fanfic_id);
+            fanfic.tags = fanficTags;
+        }
+
+        return fanfic;
     } catch (err) {
         console.error('Error executing query:', err);
         throw err;
@@ -72,7 +79,7 @@ export async function addFanfic(userId, fanficId, rating, review, favoriteMoment
 
 export async function getFanficReviewByIds(userId, fanficId) {
     try {
-        const [tuples] = await pool.query(`SELECT * FROM fanfic_subjective WHERE user_id = ? AND fanfic_id = ?`, [userId, fanficId]);
+        const [tuples] = await pool.query(`SELECT * FROM fanfic_subjective JOIN fanfic_objective ON fanfic_subjective.fanfic_id = fanfic_objective.fanfic_id WHERE user_id = ? AND fanfic_subjective.fanfic_id = ?`, [userId, fanficId]);
         return tuples[0];
     } catch (err) {
         console.error('Error executing query:', err);
@@ -82,8 +89,14 @@ export async function getFanficReviewByIds(userId, fanficId) {
 
 export async function getFanficsByList(userId, assignedList) {
     try {
-        const [tuples] = await pool.query(`SELECT * FROM fanfic_objective JOIN fanfic_subjective ON fanfic_subjective.fanfic_id = fanfic_objective.fanfic_id WHERE user_id = ? AND assigned_list = ?`, [userId, assignedList]);
-        return tuples;
+        const [fanfics] = await pool.query(`SELECT * FROM fanfic_objective JOIN fanfic_subjective ON fanfic_subjective.fanfic_id = fanfic_objective.fanfic_id WHERE user_id = ? AND assigned_list = ?`, [userId, assignedList]);
+
+        for (var fanfic of fanfics) {
+            const fanficTags = await getFanficTags(fanfic.fanfic_id);
+            fanfic.tags = fanficTags;
+        }
+
+        return fanfics;
     } catch (err) {
         console.error('Error executing query:', err);
         throw err;

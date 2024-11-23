@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class MultiselectRectangles extends StatefulWidget {
   final List<String> displayList;
   final ValueChanged<List<String>> onSelectionChanged;
+  final bool isEditable;
 
   const MultiselectRectangles({
     super.key,
     required this.displayList,
     required this.onSelectionChanged,
+    this.isEditable = true,
   });
 
   @override
@@ -25,7 +27,7 @@ class _MultiselectRectanglesState extends State<MultiselectRectangles> {
       runSpacing: 8.0,
       children: List.generate(widget.displayList.length, (index) {
         return GestureDetector(
-          onTap: () {
+          onTap: widget.isEditable ? () {
             setState(() {
               if (_selectedIndices.contains(index)) {
                 _selectedIndices.remove(index);
@@ -39,7 +41,7 @@ class _MultiselectRectanglesState extends State<MultiselectRectangles> {
 
               widget.onSelectionChanged(selectedStrings);
             });
-          },
+          } : null,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             decoration: BoxDecoration(

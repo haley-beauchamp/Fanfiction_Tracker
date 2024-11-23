@@ -13,7 +13,7 @@ CREATE TABLE users (
 CREATE TABLE fanfic_objective (
 	fanfic_id INT AUTO_INCREMENT,
     link VARCHAR(500) NOT NULL,
-    fandom VARCHAR(50),
+    fandom VARCHAR(200),
     title VARCHAR(100),
     author VARCHAR(100),
     summary VARCHAR(2000),

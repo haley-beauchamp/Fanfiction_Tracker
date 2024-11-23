@@ -7,6 +7,7 @@ class FanficWithReview {
   final String title;
   final String author;
   final String summary;
+  final List<String> tags;
   final int userId;
   final double rating;
   final String review;
@@ -20,6 +21,7 @@ class FanficWithReview {
     required this.title,
     required this.author,
     required this.summary,
+    required this.tags,
     required this.userId,
     required this.rating,
     required this.review,
@@ -35,6 +37,7 @@ class FanficWithReview {
       'title': title,
       'author': author,
       'summary': summary,
+      'tags': tags,
       'user_id': userId,
       'rating': rating,
       'review': review,
@@ -51,6 +54,7 @@ class FanficWithReview {
       title: map['title'] ?? '',
       author: map['author'] ?? '',
       summary: map['summary'] ?? '',
+      tags: List<String>.from(map['tags'] ?? []),
       userId: map['user_id'] ?? 0,
       rating: (map['rating'] is int) ? (map['rating'] as int).toDouble() : (map['rating'] ?? 0.0),
       review: map['review'] ?? '',
