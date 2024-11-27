@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const fanficRouter = Router();
-import { getFanficByLink, addFanfic, getFanficReviewByIds, getFanficsByList, addFanficFromScraper } from '../database.js';
+import { getFanficByLink, addFanfic, getFanficReviewByIds, getFanficsByList, addFanficFromScraper, deleteReview } from '../database.js';
 import { scrapeData } from '../scrapers/scraper.js';
 
 fanficRouter.post('/api/findfanfic', async (req, res) => {
@@ -52,6 +52,16 @@ fanficRouter.post('/api/fanficsbylist', async (req, res) => {
         const fanfics = await getFanficsByList(userId, assignedList);
         res.json(fanfics);
     } catch(error) {
+        res.status(500).json({error: error.message});
+    }
+});
+
+fanficRouter.delete('/api/deletereview', async (req, res) => {
+    try {
+        const {userId, fanficId} = req.body;
+        await deleteReview(userId, fanficId);
+        res.status(200).json({ message: 'Review successfully deleted.'});
+    } catch {
         res.status(500).json({error: error.message});
     }
 });

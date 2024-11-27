@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:fanfiction_tracker_flutter/common/widgets/bottom_bar.dart';
 import 'package:fanfiction_tracker_flutter/constants/error_handling.dart';
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
 import 'package:fanfiction_tracker_flutter/constants/utils.dart';
@@ -131,5 +132,47 @@ class FanficService {
     }
 
     return fanfics;
+  }
+
+  void deleteFanficReview({
+    required BuildContext context,
+    required int fanficId,
+  }) async {
+    try {
+      http.Response res = await http.delete(
+        Uri.parse('$uri/api/deletereview'),
+        body: jsonEncode({
+          'userId': Provider.of<UserProvider>(context, listen: false).user.id,
+          'fanficId': fanficId,
+        }),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (context.mounted) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            // Navigator.pushReplacementNamed(
+            //   context,
+            //   ListsScreen.routeName,
+            // );
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+              builder: (context) => const BottomBar(initialPage: 1),
+            ),
+              (Route<dynamic> route) => false,
+            );
+          },
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
+    }
   }
 }

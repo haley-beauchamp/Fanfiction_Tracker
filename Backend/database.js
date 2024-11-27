@@ -162,3 +162,13 @@ export async function getFavoriteFanficTags(userId, fanficId) {
         throw err;
     }
 }
+
+export async function deleteReview(userId, fanficId) {
+    try {
+        await pool.query(`DELETE FROM fanfic_subjective WHERE user_id = ? AND fanfic_id = ?`, [userId, fanficId]);
+        await pool.query(`DELETE FROM user_favorite_tags WHERE user_id = ? AND fanfic_id = ?`, [userId, fanficId]);
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw err;
+    }
+}

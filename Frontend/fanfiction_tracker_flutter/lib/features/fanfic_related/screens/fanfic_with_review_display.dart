@@ -1,7 +1,9 @@
+import 'package:fanfiction_tracker_flutter/common/widgets/custom_button.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/multiselect_rectangles.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/star_rating.dart';
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic_with_review.dart';
+import 'package:fanfiction_tracker_flutter/features/fanfic_related/services/fanfic_service.dart';
 import 'package:flutter/material.dart';
 
 class FanficWithReviewDisplay extends StatefulWidget {
@@ -14,6 +16,38 @@ class FanficWithReviewDisplay extends StatefulWidget {
 }
 
 class _FanficWithReviewDisplayState extends State<FanficWithReviewDisplay> {
+  final FanficService fanficService = FanficService();
+
+  void showConfirmationDialog(FanficWithReview fanfic) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Are you sure?'),
+          content: const Text('Do you want to delete this review?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('No'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                fanficService.deleteFanficReview(
+                  context: context,
+                  fanficId: fanfic.fanficId,
+                );
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final FanficWithReview fanfic =
@@ -78,7 +112,19 @@ class _FanficWithReviewDisplayState extends State<FanficWithReviewDisplay> {
                     isEditable: false,
                     initialRating: fanfic.rating,
                     onRatingChanged: (double value) {},
-                  )
+                  ),
+                  const SizedBox(height: 10),
+                  CustomButton(
+                    text: 'Edit Review',
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 10),
+                  CustomButton(
+                    text: 'Delete Review',
+                    onTap: () {
+                      showConfirmationDialog(fanfic);
+                    },
+                  ),
                 ],
               ),
             ),

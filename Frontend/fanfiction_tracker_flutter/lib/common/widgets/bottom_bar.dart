@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 
 class BottomBar extends StatefulWidget {
   static const String routeName = '/actual-home';
-  const BottomBar({super.key});
+  final int initialPage;
+
+  const BottomBar({super.key, required this.initialPage});
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -22,6 +24,12 @@ class _BottomBarState extends State<BottomBar> {
     const ListsScreen(),
     const AccountScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _page = widget.initialPage;
+  }
 
   void updatePage(int page) {
     setState(() {

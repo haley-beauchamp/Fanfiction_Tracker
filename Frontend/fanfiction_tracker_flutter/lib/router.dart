@@ -20,7 +20,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
     case BottomBar.routeName:
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (_) => const BottomBar(),
+        builder: (_) => const BottomBar(initialPage: 0),
       );
     case AddFanficScreen.routeName:
       return MaterialPageRoute(
