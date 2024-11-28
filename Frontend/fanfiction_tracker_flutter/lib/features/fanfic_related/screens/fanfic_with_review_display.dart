@@ -3,6 +3,7 @@ import 'package:fanfiction_tracker_flutter/common/widgets/multiselect_rectangles
 import 'package:fanfiction_tracker_flutter/common/widgets/star_rating.dart';
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic_with_review.dart';
+import 'package:fanfiction_tracker_flutter/features/fanfic_related/screens/edit_fanfic_screen.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/services/fanfic_service.dart';
 import 'package:flutter/material.dart';
 
@@ -45,6 +46,14 @@ class _FanficWithReviewDisplayState extends State<FanficWithReviewDisplay> {
           ],
         );
       },
+    );
+  }
+
+  void editReview(FanficWithReview fanfic) {
+    Navigator.pushNamed(
+      context,
+      EditFanficScreen.routeName,
+      arguments: fanfic,
     );
   }
 
@@ -116,7 +125,9 @@ class _FanficWithReviewDisplayState extends State<FanficWithReviewDisplay> {
                   const SizedBox(height: 10),
                   CustomButton(
                     text: 'Edit Review',
-                    onTap: () {},
+                    onTap: () {
+                      editReview(fanfic);
+                    },
                   ),
                   const SizedBox(height: 10),
                   CustomButton(

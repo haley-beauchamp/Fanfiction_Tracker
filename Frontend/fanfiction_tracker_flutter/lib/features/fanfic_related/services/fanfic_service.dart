@@ -69,7 +69,7 @@ class FanficService {
           'review': review,
           'favoriteMoments': favoriteMoments,
           'assignedList': assignedList,
-          'fanficTags': selectedTags,
+          'favoriteTags': selectedTags,
         }),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -166,6 +166,53 @@ class FanficService {
             ),
               (Route<dynamic> route) => false,
             );
+          },
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
+    }
+  }
+
+  void editFanficReview({
+    required BuildContext context,
+    required int fanficId,
+    required String review,
+    required double rating,
+    required String favoriteMoments,
+    required String assignedList,
+    required List<String> selectedTags,
+  }) async {
+    try {
+      http.Response res = await http.post(
+        Uri.parse('$uri/api/updatefanficreview'),
+        body: jsonEncode({
+          'userId': Provider.of<UserProvider>(context, listen: false).user.id,
+          'fanficId': fanficId,
+          'rating': rating,
+          'review': review,
+          'favoriteMoments': favoriteMoments,
+          'assignedList': assignedList,
+          'favoriteTags': selectedTags,
+        }),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (context.mounted) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            final fanfic = FanficWithReview.fromJson(res.body);
+            Navigator.pushNamed(
+              context,
+              FanficWithReviewDisplay.routeName,
+              arguments: fanfic,
+            ); //this works now, but since it pushes it on top of the current page, it goes back to the user submitting their review if they press back
           },
         );
       }

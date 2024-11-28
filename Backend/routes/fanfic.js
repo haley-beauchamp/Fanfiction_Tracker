@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const fanficRouter = Router();
-import { getFanficByLink, addFanfic, getFanficReviewByIds, getFanficsByList, addFanficFromScraper, deleteReview } from '../database.js';
+import { getFanficByLink, addFanfic, getFanficReviewByIds, getFanficsByList, addFanficFromScraper, deleteReview, updateFanficReview } from '../database.js';
 import { scrapeData } from '../scrapers/scraper.js';
 
 fanficRouter.post('/api/findfanfic', async (req, res) => {
@@ -32,13 +32,13 @@ fanficRouter.post('/api/findfanfic', async (req, res) => {
 
 fanficRouter.post('/api/addfanfic', async (req, res) => {
     try {
-        const {userId, fanficId, rating, review, favoriteMoments, assignedList, fanficTags} = req.body;
+        const {userId, fanficId, rating, review, favoriteMoments, assignedList, favoriteTags} = req.body;
 
         const fanficReview = await getFanficReviewByIds(userId, fanficId);
         if (fanficReview != null) {
             return res.status(400).json({ message: 'You already reviewed that one, you goof!'});
         }
-        const fanfic = await addFanfic(userId, fanficId, rating, review, favoriteMoments, assignedList, fanficTags);
+        const fanfic = await addFanfic(userId, fanficId, rating, review, favoriteMoments, assignedList, favoriteTags);
         res.json(fanfic);
     } catch(error) {
         res.status(500).json({error: error.message});
@@ -61,6 +61,16 @@ fanficRouter.delete('/api/deletereview', async (req, res) => {
         const {userId, fanficId} = req.body;
         await deleteReview(userId, fanficId);
         res.status(200).json({ message: 'Review successfully deleted.'});
+    } catch {
+        res.status(500).json({error: error.message});
+    }
+});
+
+fanficRouter.post('/api/updatefanficreview', async (req, res) => {
+    try {
+        const {userId, fanficId, rating, review, favoriteMoments, assignedList, favoriteTags} = req.body;
+        const fanfic = await updateFanficReview(userId, fanficId, rating, review, favoriteMoments, assignedList, favoriteTags);
+        res.json(fanfic);
     } catch {
         res.status(500).json({error: error.message});
     }

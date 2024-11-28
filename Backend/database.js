@@ -80,7 +80,15 @@ export async function addFanfic(userId, fanficId, rating, review, favoriteMoment
 export async function getFanficReviewByIds(userId, fanficId) {
     try {
         const [tuples] = await pool.query(`SELECT * FROM fanfic_subjective JOIN fanfic_objective ON fanfic_subjective.fanfic_id = fanfic_objective.fanfic_id WHERE user_id = ? AND fanfic_subjective.fanfic_id = ?`, [userId, fanficId]);
-        return tuples[0];
+        const fanfic = tuples[0];
+
+        const fanficTags = await getFanficTags(fanficId);
+        fanfic.tags = fanficTags;
+
+        const favoriteFanficTags = await getFavoriteFanficTags(userId, fanficId);
+        fanfic.favorite_tags = favoriteFanficTags;
+
+        return fanfic;
     } catch (err) {
         console.error('Error executing query:', err);
         throw err;
@@ -167,6 +175,35 @@ export async function deleteReview(userId, fanficId) {
     try {
         await pool.query(`DELETE FROM fanfic_subjective WHERE user_id = ? AND fanfic_id = ?`, [userId, fanficId]);
         await pool.query(`DELETE FROM user_favorite_tags WHERE user_id = ? AND fanfic_id = ?`, [userId, fanficId]);
+    } catch (err) {
+        console.error('Error executing query:', err);
+        throw err;
+    }
+}
+
+export async function updateFanficReview(userId, fanficId, rating, review, favoriteMoments, assignedList, favoriteFanficTags) {
+    try {
+        await pool.query(
+            `UPDATE fanfic_subjective SET rating = ?, review = ?, favorite_moments = ?, assigned_list = ? WHERE user_id = ? AND fanfic_id = ?`, 
+            [rating, review, favoriteMoments, assignedList, userId, fanficId]);
+
+        const previousFavoriteTags = await getFavoriteFanficTags(userId, fanficId);
+        const tagsToAdd = favoriteFanficTags.filter(tag => !previousFavoriteTags.includes(tag));
+        const tagsToRemove = previousFavoriteTags.filter(tag => !favoriteFanficTags.includes(tag));
+
+        for (const tag of tagsToAdd) {
+            const tagId = await getTagId(tag);
+            await pool.query(
+                `INSERT INTO user_favorite_tags (user_id, fanfic_id, tag_id) values (?,?,?)`,
+                [userId, fanficId, tagId]
+            );
+        }
+
+        for (const tag of tagsToRemove) {
+            const tagId = await getTagId(tag);
+            await pool.query(`DELETE FROM user_favorite_tags WHERE user_id = ? AND fanfic_id = ? AND tag_id = ?`, [userId, fanficId, tagId]);
+        }
+        return getFanficReviewByIds(userId, fanficId);
     } catch (err) {
         console.error('Error executing query:', err);
         throw err;
