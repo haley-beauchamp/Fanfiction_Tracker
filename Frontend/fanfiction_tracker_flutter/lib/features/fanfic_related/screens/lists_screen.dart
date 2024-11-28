@@ -15,18 +15,20 @@ class ListsScreen extends StatefulWidget {
 class _ListsScreenState extends State<ListsScreen> {
   final FanficService fanficService = FanficService();
   List<FanficWithReview> fanfics = [];
+  String currentList = 'Read';
 
   @override
   void initState() {
     super.initState();
-    getFanfics();
+    getFanfics(currentList);
   }
 
-  Future<void> getFanfics() async {
+  Future<void> getFanfics(String selectedList) async {
+    currentList = selectedList;
     List<FanficWithReview> fetchedFanfics =
         await fanficService.findFanficsByList(
       context: context,
-      assignedList: 'Read', // Replace with the actual list you want to fetch
+      assignedList: selectedList,
     );
     setState(() {
       fanfics = fetchedFanfics;
@@ -44,7 +46,65 @@ class _ListsScreenState extends State<ListsScreen> {
               gradient: GlobalVariables.appBarGradient,
             ),
           ),
-          title: const Text('Read list'),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                alignment: Alignment.center,
+                child: Text(
+                  '$currentList List',
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 15),
+                      child: PopupMenuButton(
+                        icon: const Icon(Icons.sort),
+                        onSelected: (String value) {},
+                        offset: const Offset(0, 40),
+                        itemBuilder: (BuildContext context) =>
+                            <PopupMenuEntry<String>>[
+                          const PopupMenuItem<String>(
+                            value: 'Author',
+                            child: Text('Sort by Author'),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: 'Fandom',
+                            child: Text('Sort by Fandom'),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: 'Rating',
+                            child: Text('Sort by Rating'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    PopupMenuButton(
+                      icon: const Icon(Icons.list_alt),
+                      onSelected: (String selectedList) {
+                        getFanfics(selectedList);
+                      },
+                      offset: const Offset(0, 40),
+                      itemBuilder: (BuildContext context) =>
+                          <PopupMenuEntry<String>>[
+                        const PopupMenuItem<String>(
+                          value: 'Read',
+                          child: Text('Read List'),
+                        ),
+                        const PopupMenuItem<String>(
+                          value: 'To-Read',
+                          child: Text('To-Read List'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       body: ListView.builder(
@@ -53,10 +113,10 @@ class _ListsScreenState extends State<ListsScreen> {
           return InkWell(
             onTap: () {
               Navigator.pushNamed(
-              context,
-              FanficWithReviewDisplay.routeName,
-              arguments: fanfics[index],
-          );
+                context,
+                FanficWithReviewDisplay.routeName,
+                arguments: fanfics[index],
+              );
             },
             child: ListTile(
               title: Center(
