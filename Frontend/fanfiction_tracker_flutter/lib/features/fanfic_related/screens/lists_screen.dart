@@ -16,19 +16,27 @@ class _ListsScreenState extends State<ListsScreen> {
   final FanficService fanficService = FanficService();
   List<FanficWithReview> fanfics = [];
   String currentList = 'Read';
+  String currentSort = '';
 
   @override
   void initState() {
     super.initState();
-    getFanfics(currentList);
+    getFanfics(currentList, null);
   }
 
-  Future<void> getFanfics(String selectedList) async {
-    currentList = selectedList;
+  Future<void> getFanfics(String? selectedList, String? selectedSort) async {
+    if (selectedList != null) {
+      currentList = selectedList;
+    }
+    if (selectedSort != null) {
+      currentSort = selectedSort;
+    }
+
     List<FanficWithReview> fetchedFanfics =
         await fanficService.findFanficsByList(
       context: context,
-      assignedList: selectedList,
+      assignedList: currentList,
+      assignedSort: currentSort,
     );
     setState(() {
       fanfics = fetchedFanfics;
@@ -73,20 +81,26 @@ class _ListsScreenState extends State<ListsScreen> {
                         ),
                         child: PopupMenuButton(
                           icon: const Icon(Icons.sort),
-                          onSelected: (String value) {},
+                          onSelected: (String selectedSort) {
+                            getFanfics(null, selectedSort);
+                          },
                           offset: const Offset(0, 50),
                           itemBuilder: (BuildContext context) =>
                               <PopupMenuEntry<String>>[
                             const PopupMenuItem<String>(
-                              value: 'Author',
+                              value: 'title',
+                              child: Text('Sort by Title'),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'author',
                               child: Text('Sort by Author'),
                             ),
                             const PopupMenuItem<String>(
-                              value: 'Fandom',
+                              value: 'fandom',
                               child: Text('Sort by Fandom'),
                             ),
                             const PopupMenuItem<String>(
-                              value: 'Rating',
+                              value: 'rating',
                               child: Text('Sort by Rating'),
                             ),
                           ],
@@ -106,7 +120,7 @@ class _ListsScreenState extends State<ListsScreen> {
                       child: PopupMenuButton(
                         icon: const Icon(Icons.list_alt),
                         onSelected: (String selectedList) {
-                          getFanfics(selectedList);
+                          getFanfics(selectedList, null);
                         },
                         offset: const Offset(0, 50),
                         itemBuilder: (BuildContext context) =>
@@ -144,9 +158,30 @@ class _ListsScreenState extends State<ListsScreen> {
               title: Center(
                 child: Text(
                   fanfics[index].title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
               ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 8),
+                  Text(
+                    "By ${fanfics[index].author}",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "Fandom: ${fanfics[index].fandom}",
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              contentPadding:
+                  const EdgeInsets.all(20), //good enough i guess???????
             ),
           );
         },

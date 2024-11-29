@@ -100,6 +100,7 @@ class FanficService {
   Future<List<FanficWithReview>> findFanficsByList({
     required BuildContext context,
     required String assignedList,
+    required String assignedSort,
   }) async {
     List<FanficWithReview> fanfics = [];
     try {
@@ -108,6 +109,7 @@ class FanficService {
         body: jsonEncode({
           'userId': Provider.of<UserProvider>(context, listen: false).user.id,
           'assignedList': assignedList,
+          'assignedSort': assignedSort,
         }),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

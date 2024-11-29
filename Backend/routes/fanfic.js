@@ -47,9 +47,9 @@ fanficRouter.post('/api/addfanfic', async (req, res) => {
 
 fanficRouter.post('/api/fanficsbylist', async (req, res) => {
     try {
-        const {userId, assignedList} = req.body;
+        const {userId, assignedList, assignedSort} = req.body;
 
-        const fanfics = await getFanficsByList(userId, assignedList);
+        const fanfics = await getFanficsByList(userId, assignedList, assignedSort);
         res.json(fanfics);
     } catch(error) {
         res.status(500).json({error: error.message});

@@ -79,7 +79,11 @@ export async function addFanfic(userId, fanficId, rating, review, favoriteMoment
 
 export async function getFanficReviewByIds(userId, fanficId) {
     try {
-        const [tuples] = await pool.query(`SELECT * FROM fanfic_subjective JOIN fanfic_objective ON fanfic_subjective.fanfic_id = fanfic_objective.fanfic_id WHERE user_id = ? AND fanfic_subjective.fanfic_id = ?`, [userId, fanficId]);
+        const [tuples] = await pool.query(
+            `SELECT * 
+            FROM fanfic_subjective JOIN fanfic_objective ON fanfic_subjective.fanfic_id = fanfic_objective.fanfic_id
+            WHERE user_id = ? AND fanfic_subjective.fanfic_id = ?`, [userId, fanficId]
+        );
         const fanfic = tuples[0];
 
         if (fanfic != null) {
@@ -97,9 +101,25 @@ export async function getFanficReviewByIds(userId, fanficId) {
     }
 }
 
-export async function getFanficsByList(userId, assignedList) {
+export async function getFanficsByList(userId, assignedList, assignedSort) {
     try {
-        const [fanfics] = await pool.query(`SELECT * FROM fanfic_objective JOIN fanfic_subjective ON fanfic_subjective.fanfic_id = fanfic_objective.fanfic_id WHERE user_id = ? AND assigned_list = ?`, [userId, assignedList]);
+        const validSortColumns = ['fandom', 'author', 'rating', 'title']
+        const defaultSort = 'title';
+        let sortOrder = '';
+        
+        const sortColumn = validSortColumns.includes(assignedSort) ? assignedSort : defaultSort;
+        if (sortColumn === 'rating') {
+            sortOrder = 'DESC';
+        } else {
+            sortOrder = '';
+        }
+
+        const [fanfics] = await pool.query(
+            `SELECT * 
+            FROM fanfic_objective JOIN fanfic_subjective ON fanfic_subjective.fanfic_id = fanfic_objective.fanfic_id 
+            WHERE user_id = ? AND assigned_list = ?
+            ORDER BY ${sortColumn} ${sortOrder}`, [userId, assignedList]
+        );
 
         for (var fanfic of fanfics) {
             const fanficTags = await getFanficTags(fanfic.fanfic_id);
@@ -153,7 +173,10 @@ export async function getTagId(tagName) {
 
 export async function getFanficTags(fanficId) {
     try {
-        const [tags] = await pool.query(`SELECT tag_name FROM fanfic_tags JOIN tags ON fanfic_tags.tag_id = tags.tag_id WHERE fanfic_id = ?`, [fanficId]);
+        const [tags] = await pool.query(
+            `SELECT tag_name 
+            FROM fanfic_tags JOIN tags ON fanfic_tags.tag_id = tags.tag_id WHERE fanfic_id = ?`, [fanficId]
+        );
         const tagNames = tags.map(tag => tag.tag_name);;
         return tagNames;
     } catch (err) {
@@ -164,7 +187,11 @@ export async function getFanficTags(fanficId) {
 
 export async function getFavoriteFanficTags(userId, fanficId) {
     try {
-        const [tags] = await pool.query(`SELECT tag_name FROM fanfic_tags AS ft JOIN tags ON ft.tag_id = tags.tag_id JOIN user_favorite_tags AS ut ON ft.tag_id = ut.tag_id WHERE user_id = ? AND ft.fanfic_id = ?`, [userId, fanficId]);
+        const [tags] = await pool.query(
+            `SELECT tag_name 
+            FROM fanfic_tags AS ft JOIN tags ON ft.tag_id = tags.tag_id JOIN user_favorite_tags AS ut ON ft.tag_id = ut.tag_id 
+            WHERE user_id = ? AND ft.fanfic_id = ?`, [userId, fanficId]
+        );
         const tagNames = tags.map(tag => tag.tag_name);;
         return tagNames;
     } catch (err) {
