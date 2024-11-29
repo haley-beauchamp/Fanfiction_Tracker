@@ -61,44 +61,66 @@ class _ListsScreenState extends State<ListsScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 15),
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          popupMenuTheme: const PopupMenuThemeData(
+                            textStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                            color: GlobalVariables.dropdownColor,
+                          ),
+                        ),
+                        child: PopupMenuButton(
+                          icon: const Icon(Icons.sort),
+                          onSelected: (String value) {},
+                          offset: const Offset(0, 50),
+                          itemBuilder: (BuildContext context) =>
+                              <PopupMenuEntry<String>>[
+                            const PopupMenuItem<String>(
+                              value: 'Author',
+                              child: Text('Sort by Author'),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'Fandom',
+                              child: Text('Sort by Fandom'),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'Rating',
+                              child: Text('Sort by Rating'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        popupMenuTheme: const PopupMenuThemeData(
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                          color: GlobalVariables.dropdownColor,
+                        ),
+                      ),
                       child: PopupMenuButton(
-                        icon: const Icon(Icons.sort),
-                        onSelected: (String value) {},
-                        offset: const Offset(0, 40),
+                        icon: const Icon(Icons.list_alt),
+                        onSelected: (String selectedList) {
+                          getFanfics(selectedList);
+                        },
+                        offset: const Offset(0, 50),
                         itemBuilder: (BuildContext context) =>
                             <PopupMenuEntry<String>>[
                           const PopupMenuItem<String>(
-                            value: 'Author',
-                            child: Text('Sort by Author'),
+                            value: 'Read',
+                            child: Text('Read List'),
                           ),
                           const PopupMenuItem<String>(
-                            value: 'Fandom',
-                            child: Text('Sort by Fandom'),
-                          ),
-                          const PopupMenuItem<String>(
-                            value: 'Rating',
-                            child: Text('Sort by Rating'),
+                            value: 'To-Read',
+                            child: Text('To-Read List'),
                           ),
                         ],
                       ),
-                    ),
-                    PopupMenuButton(
-                      icon: const Icon(Icons.list_alt),
-                      onSelected: (String selectedList) {
-                        getFanfics(selectedList);
-                      },
-                      offset: const Offset(0, 40),
-                      itemBuilder: (BuildContext context) =>
-                          <PopupMenuEntry<String>>[
-                        const PopupMenuItem<String>(
-                          value: 'Read',
-                          child: Text('Read List'),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'To-Read',
-                          child: Text('To-Read List'),
-                        ),
-                      ],
                     ),
                   ],
                 ),

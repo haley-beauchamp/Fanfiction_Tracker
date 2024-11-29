@@ -16,4 +16,5 @@ class GlobalVariables {
   static const Color greyBackgroundColor = Color(0xffebecee);
   static const selectedNavBarColor = Color.fromRGBO(69, 91, 190, 1);
   static const unselectedNavBarColor = Colors.black87;
+  static const dropdownColor = Color.fromRGBO(94, 115, 205, 1);
 }

@@ -1,6 +1,7 @@
 import 'package:fanfiction_tracker_flutter/common/widgets/custom_button.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/custom_textfield.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/multiselect_rectangles.dart';
+import 'package:fanfiction_tracker_flutter/common/widgets/singleselect_rectangles.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/star_rating.dart';
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic.dart';
@@ -24,6 +25,7 @@ class _AddFanficScreenState extends State<AddFanficScreen> {
 
   double fanficRating = 0.0;
   List<String> selectedFanficTags = [];
+  String selectedDisplayList = 'Read';
 
   @override
   void dispose() {
@@ -39,7 +41,7 @@ class _AddFanficScreenState extends State<AddFanficScreen> {
       review: _reviewController.text,
       rating: fanficRating,
       favoriteMoments: _favoriteMomentsController.text,
-      assignedList: 'Read', //edit this to let the user pick
+      assignedList: selectedDisplayList,
       selectedTags: selectedFanficTags,
     );
   }
@@ -106,7 +108,7 @@ class _AddFanficScreenState extends State<AddFanficScreen> {
                         displayList: fanfic.tags,
                         onSelectionChanged: (selectedTags) {
                           setState(() {
-                            selectedFanficTags = selectedTags; // Update selected tags
+                            selectedFanficTags = selectedTags;
                           });
                         },
                       ),
@@ -115,6 +117,15 @@ class _AddFanficScreenState extends State<AddFanficScreen> {
                         onRatingChanged: (rating) {
                           setState(() {
                             fanficRating = rating;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      SingleSelectRectangles(
+                        displayList: const ['Read', 'To-Read'],
+                        onSelectionChanged: (selectedList) {
+                          setState(() {
+                            selectedDisplayList = selectedList;
                           });
                         },
                       ),

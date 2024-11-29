@@ -70,7 +70,7 @@ export async function addFanfic(userId, fanficId, rating, review, favoriteMoment
                 [userId, fanficId, tagId]
             );
         }
-        return getFanficReviewByIds(userId, fanficId);
+        return await getFanficReviewByIds(userId, fanficId);
     } catch (err) {
         console.error('Error executing query:', err);
         throw err;
@@ -82,11 +82,13 @@ export async function getFanficReviewByIds(userId, fanficId) {
         const [tuples] = await pool.query(`SELECT * FROM fanfic_subjective JOIN fanfic_objective ON fanfic_subjective.fanfic_id = fanfic_objective.fanfic_id WHERE user_id = ? AND fanfic_subjective.fanfic_id = ?`, [userId, fanficId]);
         const fanfic = tuples[0];
 
-        const fanficTags = await getFanficTags(fanficId);
-        fanfic.tags = fanficTags;
+        if (fanfic != null) {
+            const fanficTags = await getFanficTags(fanficId);
+            fanfic.tags = fanficTags;
 
-        const favoriteFanficTags = await getFavoriteFanficTags(userId, fanficId);
-        fanfic.favorite_tags = favoriteFanficTags;
+            const favoriteFanficTags = await getFavoriteFanficTags(userId, fanficId);
+            fanfic.favorite_tags = favoriteFanficTags;
+        }
 
         return fanfic;
     } catch (err) {
@@ -203,7 +205,7 @@ export async function updateFanficReview(userId, fanficId, rating, review, favor
             const tagId = await getTagId(tag);
             await pool.query(`DELETE FROM user_favorite_tags WHERE user_id = ? AND fanfic_id = ? AND tag_id = ?`, [userId, fanficId, tagId]);
         }
-        return getFanficReviewByIds(userId, fanficId);
+        return await getFanficReviewByIds(userId, fanficId);
     } catch (err) {
         console.error('Error executing query:', err);
         throw err;

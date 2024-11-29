@@ -1,6 +1,7 @@
 import 'package:fanfiction_tracker_flutter/common/widgets/custom_button.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/custom_textfield.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/multiselect_rectangles.dart';
+import 'package:fanfiction_tracker_flutter/common/widgets/singleselect_rectangles.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/star_rating.dart';
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic_with_review.dart';
@@ -25,6 +26,7 @@ class _AddFanficScreenState extends State<EditFanficScreen> {
   double fanficRating = 0.0;
   List<String> selectedFanficTags = [];
   late FanficWithReview fanfic;
+  String selectedDisplayList = 'Read';
   
   @override
   void didChangeDependencies() {
@@ -36,6 +38,7 @@ class _AddFanficScreenState extends State<EditFanficScreen> {
     _favoriteMomentsController.text = fanfic.favoriteMoments;
     fanficRating = fanfic.rating;
     selectedFanficTags = fanfic.favoriteTags;
+    selectedDisplayList = fanfic.assignedList;
   }
 
   @override
@@ -52,7 +55,7 @@ class _AddFanficScreenState extends State<EditFanficScreen> {
       review: _reviewController.text,
       rating: fanficRating,
       favoriteMoments: _favoriteMomentsController.text,
-      assignedList: 'Read', //edit this to let the user pick
+      assignedList: selectedDisplayList, //edit this to let the user pick
       selectedTags: selectedFanficTags,
     );
   }
@@ -130,6 +133,16 @@ class _AddFanficScreenState extends State<EditFanficScreen> {
                             fanficRating = rating;
                           });
                         },
+                      ),
+                      const SizedBox(height: 10),
+                      SingleSelectRectangles(
+                        displayList: const ['Read', 'To-Read'],
+                        onSelectionChanged: (selectedList) {
+                          setState(() {
+                            selectedDisplayList = selectedList;
+                          });
+                        },
+                        initialSelection: selectedDisplayList,
                       ),
                       const SizedBox(height: 10),
                       CustomButton(
