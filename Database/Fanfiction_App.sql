@@ -37,12 +37,12 @@ CREATE TABLE fanfic_tags (
 CREATE TABLE fanfic_subjective (
 	user_id INT,
     fanfic_id INT,
-    rating DOUBLE CHECK (rating >= 1 AND rating <= 5),
+    rating DOUBLE NULL CHECK (rating >= 1 AND rating <= 5),
     review VARCHAR(1000),
     favorite_moments VARCHAR(1000),
     assigned_list ENUM('Read', 'To-Read'),
     PRIMARY KEY (user_id, fanfic_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (fanfic_id) REFERENCES fanfic_objective(fanfic_id)
 );
 

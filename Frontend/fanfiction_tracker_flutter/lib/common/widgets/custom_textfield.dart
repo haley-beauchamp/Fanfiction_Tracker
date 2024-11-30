@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
+  final bool isRequired;
+
   const CustomTextField({
     super.key,
     required this.controller,
     required this.hintText,
+    this.isRequired = true,
   });
 
   @override
@@ -29,7 +32,7 @@ class CustomTextField extends StatelessWidget {
       minLines: 1,
       maxLines: null,
       validator: (val) {
-        if (val == null || val.isEmpty) {
+        if ((val == null || val.isEmpty) && isRequired) {
           return 'Enter your $hintText';
         } 
         return null;

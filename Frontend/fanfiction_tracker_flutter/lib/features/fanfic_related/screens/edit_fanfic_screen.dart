@@ -23,7 +23,7 @@ class _AddFanficScreenState extends State<EditFanficScreen> {
   final TextEditingController _favoriteMomentsController =
       TextEditingController();
 
-  double fanficRating = 0.0;
+  double? fanficRating;
   List<String> selectedFanficTags = [];
   late FanficWithReview fanfic;
   String selectedDisplayList = 'Read';
@@ -104,11 +104,13 @@ class _AddFanficScreenState extends State<EditFanficScreen> {
                       CustomTextField(
                         controller: _reviewController,
                         hintText: 'Review',
+                        isRequired: false,
                       ),
                       const SizedBox(height: 10),
                       CustomTextField(
                         controller: _favoriteMomentsController,
                         hintText: 'Favorite Moments',
+                        isRequired: false,
                       ),
                       const SizedBox(height: 10),
                       const Text(

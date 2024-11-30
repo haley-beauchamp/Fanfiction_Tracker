@@ -5,13 +5,13 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 class StarRating extends StatefulWidget {
   final ValueChanged<double> onRatingChanged;
   final bool isEditable;
-  final double initialRating;
+  final double? initialRating;
 
   const StarRating({
     super.key,
     required this.onRatingChanged,
     this.isEditable = true,
-    this.initialRating = 0.0,
+    this.initialRating,
   });
 
   @override
@@ -19,18 +19,19 @@ class StarRating extends StatefulWidget {
 }
 
 class _StarRatingState extends State<StarRating> {
-  late double _rating;
+  double? _rating;
 
   @override
   void initState() {
     super.initState();
+    print(widget.initialRating);
     _rating = widget.initialRating;
   }
 
   @override
   Widget build(BuildContext context) {
     return RatingBar.builder(
-      initialRating: _rating,
+      initialRating: _rating ?? 0,
       minRating: 1,
       direction: Axis.horizontal,
       allowHalfRating: true,

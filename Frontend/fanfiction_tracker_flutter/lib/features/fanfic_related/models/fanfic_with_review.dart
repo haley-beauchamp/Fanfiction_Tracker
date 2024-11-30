@@ -9,7 +9,7 @@ class FanficWithReview {
   final String summary;
   final List<String> tags;
   final int userId;
-  final double rating;
+  final double? rating;
   final String review;
   final String favoriteMoments;
   final String assignedList;
@@ -59,7 +59,7 @@ class FanficWithReview {
       summary: map['summary'] ?? '',
       tags: List<String>.from(map['tags'] ?? []),
       userId: map['user_id'] ?? 0,
-      rating: (map['rating'] is int) ? (map['rating'] as int).toDouble() : (map['rating'] ?? 0.0),
+      rating: (map['rating'] is int) ? (map['rating'] as int).toDouble() : (map['rating']),
       review: map['review'] ?? '',
       favoriteMoments: map['favorite_moments'] ?? '',
       assignedList: map['assigned_list'] ?? '',

@@ -10,8 +10,13 @@ export async function scrapeData(link) {
         const fanficData = {
             fandom: $('dd.fandom.tags ul.commas li a.tag').first().text().trim(), //gets the first fandom only
             title: $('h2.title.heading').text().trim(),
-            author: $('h3.byline.heading a[rel="author"]').text().trim(),
-            //summary: $('blockquote.userstuff').first().text().trim(),
+            author: (() => {
+                let author = $('h3.byline.heading a[rel="author"]').text().trim();
+                if (author.length <= 0) {
+                    author = 'Anonymous'; //a03 doesn't send the author as "Anonymous" when no author is linked, so this does that manually
+                }
+                return author;
+            })(),
             summary: (() => {
                 const blockquotes = $('blockquote.userstuff');
                 const firstBlockquote = blockquotes.first();    
