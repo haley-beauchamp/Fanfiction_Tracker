@@ -82,11 +82,17 @@ class FanficService {
           context: context,
           onSuccess: () {
             final fanfic = FanficWithReview.fromJson(res.body);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BottomBar(initialPage: 1),
+              ),
+            );
             Navigator.pushNamed(
               context,
               FanficWithReviewDisplay.routeName,
               arguments: fanfic,
-            ); //this works now, but since it pushes it on top of the current page, it goes back to the user submitting their review if they press back
+            );
           },
         );
       }
@@ -160,8 +166,8 @@ class FanficService {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-              builder: (context) => const BottomBar(initialPage: 1),
-            ),
+                builder: (context) => const BottomBar(initialPage: 1),
+              ),
               (Route<dynamic> route) => false,
             );
           },
@@ -206,11 +212,18 @@ class FanficService {
           context: context,
           onSuccess: () {
             final fanfic = FanficWithReview.fromJson(res.body);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BottomBar(initialPage: 1),
+              ),
+              (Route<dynamic> route) => false,
+            );
             Navigator.pushNamed(
               context,
               FanficWithReviewDisplay.routeName,
               arguments: fanfic,
-            ); //this works now, but since it pushes it on top of the current page, it goes back to the user submitting their review if they press back
+            );
           },
         );
       }
