@@ -157,10 +157,6 @@ class FanficService {
           response: res,
           context: context,
           onSuccess: () {
-            // Navigator.pushReplacementNamed(
-            //   context,
-            //   ListsScreen.routeName,
-            // );
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
