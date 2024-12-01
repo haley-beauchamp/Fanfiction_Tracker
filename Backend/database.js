@@ -238,3 +238,28 @@ export async function updateFanficReview(userId, fanficId, rating, review, favor
         throw err;
     }
 }
+
+export async function getFanficStats(fanficId) {
+    try {
+        const [result] = await pool.query(
+            `SELECT
+	            fo.fanfic_id,
+                title,
+                COUNT(fs.rating) AS times_rated,
+                AVG(fs.rating) AS avg_rating
+            FROM
+                fanfic_objective AS fo
+                JOIN
+                fanfic_subjective AS fs
+                ON fo.fanfic_id = fs.fanfic_id
+            WHERE
+                fo.fanfic_id = ?
+            GROUP BY 
+                fo.fanfic_id;`, [fanficId]
+        );
+        return result[0];
+    } catch {
+        console.error('Error executing query:', err);
+        throw err;
+    }
+}

@@ -2,6 +2,7 @@ import 'package:fanfiction_tracker_flutter/common/widgets/custom_button.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/multiselect_rectangles.dart';
 import 'package:fanfiction_tracker_flutter/common/widgets/star_rating.dart';
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
+import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic_stats.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic_with_review.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/screens/edit_fanfic_screen.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/services/fanfic_service.dart';
@@ -29,13 +30,13 @@ class _FanficWithReviewDisplayState extends State<FanficWithReviewDisplay> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: const Text('No'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
                 fanficService.deleteFanficReview(
                   context: context,
                   fanficId: fanfic.fanficId,
@@ -56,6 +57,51 @@ class _FanficWithReviewDisplayState extends State<FanficWithReviewDisplay> {
       arguments: fanfic,
     );
   }
+
+  void viewStats(FanficWithReview fanfic) async {
+    FanficStats? fanficStats = await fanficService.getFanficStats(
+      context: context,
+      fanficId: fanfic.fanficId,
+    );
+
+    if (fanficStats != null && context.mounted) {
+      showStatsDialog(fanficStats);
+    }
+  }
+
+  void showStatsDialog(FanficStats fanficStats) {
+  if (context.mounted) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Stats for ${fanficStats.title}'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Average Rating'),
+              StarRating(
+                isEditable: false,
+                initialRating: fanficStats.averageRating,
+                onRatingChanged: (double value) {},
+              ),
+              const SizedBox(height: 10),
+              Text('Times Rated: ${fanficStats.timesRated}')
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +180,13 @@ class _FanficWithReviewDisplayState extends State<FanficWithReviewDisplay> {
                     text: 'Delete Review',
                     onTap: () {
                       showConfirmationDialog(fanfic);
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  CustomButton(
+                    text: 'View Fanfic Stats',
+                    onTap: () {
+                      viewStats(fanfic);
                     },
                   ),
                 ],

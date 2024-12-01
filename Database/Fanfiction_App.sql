@@ -55,35 +55,3 @@ CREATE TABLE user_favorite_tags (
     FOREIGN KEY (fanfic_id) REFERENCES fanfic_objective(fanfic_id),
     FOREIGN KEY (tag_id) REFERENCES tags(tag_id)
 );
-
-SELECT * FROM users;
-SELECT * FROM fanfic_objective;
-SELECT * FROM fanfic_subjective;
-SELECT * FROM tags;
-SELECT * FROM fanfic_tags;
-
-SELECT  
-	tags.tag_id AS tag_id,
-    tag_name,
-    fanfic_id
-FROM tags JOIN fanfic_tags ON tags.tag_id = fanfic_tags.tag_id
-WHERE fanfic_id = 22;
-
-SELECT *
-FROM user_favorite_tags JOIN tags ON user_favorite_tags.tag_id = tags.tag_id
-WHERE user_favorite_tags.fanfic_id = 22;
-
-SELECT * FROM user_favorite_tags;
-
-CREATE VIEW fanfic_review_statistics AS
-SELECT
-	fo.fanfic_id,
-	title,
-	COUNT(fs.fanfic_id) AS times_reviewed
-FROM
-	fanfic_objective AS fo
-    LEFT JOIN 
-    fanfic_subjective AS fs
-    ON fo.fanfic_id = fs.fanfic_id
-GROUP BY
-	fo.fanfic_id;

@@ -5,6 +5,7 @@ import 'package:fanfiction_tracker_flutter/constants/error_handling.dart';
 import 'package:fanfiction_tracker_flutter/constants/global_variables.dart';
 import 'package:fanfiction_tracker_flutter/constants/utils.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic.dart';
+import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic_stats.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/models/fanfic_with_review.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/screens/add_fanfic_screen.dart';
 import 'package:fanfiction_tracker_flutter/features/fanfic_related/screens/fanfic_with_review_display.dart';
@@ -232,5 +233,38 @@ class FanficService {
         showSnackBar(context, e.toString());
       }
     }
+  }
+
+  Future<FanficStats?> getFanficStats({
+    required BuildContext context,
+    required int fanficId,
+  }) async {
+    FanficStats? fanficStats;
+    try {
+      http.Response res = await http.post(
+        Uri.parse('$uri/api/fanficstats'),
+        body: jsonEncode({
+          'fanficId': fanficId,
+        }),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (context.mounted) {
+        httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            fanficStats = FanficStats.fromJson(res.body);
+          },
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
+    }
+    return fanficStats;
   }
 }

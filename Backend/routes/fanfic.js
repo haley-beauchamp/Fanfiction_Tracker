@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const fanficRouter = Router();
-import { getFanficByLink, addFanfic, getFanficReviewByIds, getFanficsByList, addFanficFromScraper, deleteReview, updateFanficReview } from '../database.js';
+import { getFanficByLink, addFanfic, getFanficReviewByIds, getFanficsByList, addFanficFromScraper, deleteReview, updateFanficReview, getFanficStats } from '../database.js';
 import { scrapeData } from '../scrapers/scraper.js';
 
 fanficRouter.post('/api/findfanfic', async (req, res) => {
@@ -75,5 +75,15 @@ fanficRouter.post('/api/updatefanficreview', async (req, res) => {
         res.status(500).json({error: error.message});
     }
 });
+
+fanficRouter.post('/api/fanficstats', async (req, res) => {
+    try {
+        const {fanficId} = req.body;
+        const fanficStats = await getFanficStats(fanficId);
+        res.json(fanficStats);
+    } catch {
+        res.status(500).json({error: error.message});
+    }
+})
 
 export default fanficRouter;

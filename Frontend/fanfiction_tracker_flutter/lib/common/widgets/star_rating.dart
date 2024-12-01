@@ -24,7 +24,6 @@ class _StarRatingState extends State<StarRating> {
   @override
   void initState() {
     super.initState();
-    print(widget.initialRating);
     _rating = widget.initialRating;
   }
 
