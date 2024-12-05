@@ -1,5 +1,5 @@
 # Fanfiction_Tracker
-A mobile fanfiction tracking app similar to Goodreads for my Database Design and Management course. When opening the project, the user is prompted to create an account. Once they have logged in, that state is persisted. On logged in, they are navigated to the home page, which allows users to input a link from Ao3. The app will either grab the details from the database or scrape the html of the linked Ao3 website. From there, the user can write a review, rate the fanfic, and add it to a list. Lists can be sorted by various fanfic attributes, and reviews edited or deleted from the lists tab.
+A mobile fanfiction tracking app similar to Goodreads for my Database Design and Management course. When opening the project, the user is prompted to create an account. Once they have logged in, that state is persisted. Once logged in, they are navigated to the home page, which allows users to input a link from Ao3. The app will either grab the details from the database or scrape the html of the linked Ao3 website. From there, the user can write a review, rate the fanfic, and add it to a list. Lists can be sorted by various fanfic attributes, and reviews edited or deleted from the lists tab.
 
 ## Technologies Used
 - Frontend: Flutter
