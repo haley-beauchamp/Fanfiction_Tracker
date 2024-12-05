@@ -8,16 +8,23 @@ A mobile fanfiction tracking app similar to Goodreads for my Database Design and
 
 ## Setup Instructions
 1. Backend Setup
-To run, create a .env file in the Backend folder with the following:
-- MYSQL_HOST = ''
-- MYSQL_USER = ''
-- MYSQL_PASSWORD = ''
-- MYSQL_DATABASE = 'Fanfiction_App'
-- TOKEN_SECRET = ''
 
-2. Frontend Setup
-To get the project to work on an Android emulator, edit global_variables.dart (located: Frontend/fanfiction_tracker_flutter/lib/constants/global_variables.dart). It's currently set to localhost, which only works for the iPhone emulator.
-- String uri = 'http://ipaddress:3000';
+    a. To run, create a .env file in the Backend folder with the following:
+      - MYSQL_HOST = ''
+      - MYSQL_USER = ''
+      - MYSQL_PASSWORD = ''
+      - MYSQL_DATABASE = 'Fanfiction_App'
+      - TOKEN_SECRET = ''
+  
+    b. npm run dev in the Backend directory
+
+3. Frontend Setup
+   
+   a. flutter pub get in the Flutter project directory
+
+   b. To get the project to work on an Android emulator, edit global_variables.dart (located: Frontend/fanfiction_tracker_flutter/lib/constants/global_variables.dart). It's currently set to localhost, which only works for the iPhone emulator.
+    - String uri = 'http://ipaddress:3000';
 
 3. Database Setup
+   
 Run the Fanfiction_App.sql file included in the Database folder to set up the database.
